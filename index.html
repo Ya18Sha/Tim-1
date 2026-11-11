@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClaimPilot AI | Quality Intelligence</title>
+<style>
+:root {
+  --bg:#070d19;
+  --panel:#111d31;
+  --border:#263b58;
+  --blue:#54caff;
+  --text:#edf5ff;
+  --muted:#91a5bf;
+  --green:#52e3b4;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:radial-gradient(circle at 85% 0%,#17365b,transparent 40%),var(--bg);
+  color:var(--text);
+  font:15px/1.5 system-ui,Arial,sans-serif;
+}
+.app {display:flex;min-height:100vh}
+aside {
+  width:240px;
+  padding:28px 18px;
+  background:#0a1324;
+  border-right:1px solid var(--border);
+}
+.logo {font-size:24px;font-weight:800;margin-bottom:40px}
+.logo span {color:var(--blue)}
+nav a {
+  display:block;
+  color:var(--muted);
+  text-decoration:none;
+  padding:13px;
+  border-radius:10px;
+  margin-bottom:8px;
+}
+nav a:hover,nav a.active {
+  background:#19334e;
+  color:var(--blue);
+}
+main {flex:1;min-width:0;padding:35px;max-width:1400px}
+.tag {color:var(--blue);font-size:12px;letter-spacing:2px}
+h1 {font-size:clamp(30px,5vw,48px);margin:15px 0}
+h1 span {color:var(--blue)}
+h2 {margin-top:0}
+p,.muted {color:var(--muted)}
+.metrics,.grid {display:grid;gap:18px;margin:25px 0}
+.metrics {grid-template-columns:repeat(3,1fr)}
+.grid {grid-template-columns:1.2fr 1fr}
+.card {
+  background:linear-gradient(145deg,#14243a,#101a2c);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+}
+.number {font-size:32px;font-weight:800}
+textarea {
+  width:100%;
+  min-height:140px;
+  padding:14px;
+  border:1px solid #385271;
+  border-radius:12px;
+  background:#0a1527;
+  color:white;
+  font:inherit;
+  resize:vertical;
+}
+input[type=file] {width:100%;margin:15px 0;color:var(--muted)}
+button {
+  padding:13px 20px;
+  border:0;
+  border-radius:11px;
+  background:linear-gradient(90deg,#4dd2ff,#5985ff);
+  color:#061328;
+  font-weight:800;
+  cursor:pointer;
+  margin:6px 6px 6px 0;
+}
+button:disabled {opacity:.5;cursor:wait}
+.secondary {background:#263b55;color:white}
+.step {
+  display:flex;
+  gap:14px;
+  align-items:center;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+.step b {color:var(--blue)}
+.status {color:var(--green);font-size:13px}
+.hidden {display:none}
+.result-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.result-grid .wide {grid-column:1/-1}
+ul {padding-left:20px}
+li {margin:8px 0}
+.report-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.report-grid label {color:var(--blue);font-weight:bold}
+.report-grid textarea {margin-top:7px;min-height:110px}
+.message {padding:12px;border:1px solid var(--border);border-radius:10px}
+footer {margin:35px 0;color:var(--muted);font-size:12px}
+@media(max-width:900px) {
+  .app {display:block}
+  aside {width:100%;padding:18px}
+  .logo {margin:0 0 12px}
+  nav {display:flex;flex-wrap:wrap}
+  main {padding:20px}
+  .grid {grid-template-columns:1fr}
+}
+@media(max-width:600px) {
+  .metrics,.result-grid,.report-grid {grid-template-columns:1fr}
+  .result-grid .wide {grid-column:auto}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="logo">✦ ClaimPilot <span>AI</span></div>
+  <nav>
+    <a class="active" href="#dashboard">◈ Dashboard</a>
+    <a href="#new-claim">＋ Nová reklamácia</a>
+    <a href="#results">▤ 8D Report</a>
+  </nav>
+  <p>MAGNA HACKATHON<br>ZADANIE 7</p>
+</aside>
+
+<main id="dashboard">
+  <div class="tag">QUALITY INTELLIGENCE / 2026</div>
+  <h1>From complaint to <span>clarity.</span></h1>
+  <p>AI asistent pre zákaznícke reklamácie a automatickú prípravu 8D reportov.</p>
+  <div class="status" id="health">● Kontrola AI servera...</div>
+
+  <div class="metrics">
+    <div class="card">
+      <p>ANALYZOVANÉ PRÍPADY</p>
+      <div class="number" id="count">0</div>
+    </div>
+    <div class="card">
+      <p>AI ENGINE</p>
+      <div class="number">8D</div>
+    </div>
+    <div class="card">
+      <p>MAX. PRÍLOHY</p>
+      <div class="number">4</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card" id="new-claim">
+      <div class="tag">01 / NEW CASE</div>
+      <h2>Nová reklamácia</h2>
+      <p>Opíšte problém a nahrajte dokumenty.</p>
+
+      <label for="description">Opis reklamácie</label>
+      <textarea id="description" maxlength="12000"
+        placeholder="Napr.: Zákazník nahlásil praskliny na plastovom kryte..."></textarea>
+
+      <p>Dokumenty a fotografie (PDF, JPG, PNG, WEBP)</p>
+      <input type="file" id="files" multiple
+        accept=".pdf,.jpg,.jpeg,.png,.webp">
+
+      <button id="analyze">✦ Analyze with AI</button>
+      <button class="secondary" id="example">Vložiť príklad</button>
+      <p id="message" class="message" role="status">
+        AI výstup vyžaduje kontrolu kvalifikovanou osobou.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="tag">02 / WORKFLOW</div>
+      <h2>Inteligentné spracovanie</h2>
+      <div class="step"><b>01</b> Príjem reklamácie</div>
+      <div class="step"><b>02</b> AI analýza dokumentov</div>
+      <div class="step"><b>03</b> Identifikácia chýbajúcich údajov</div>
+      <div class="step"><b>04</b> Návrh 8D reportu</div>
+      <p>Human-in-the-loop: AI pripravuje návrh, konečné rozhodnutie zostáva na človeku.</p>
+    </section>
+  </div>
+
+  <section id="results" class="hidden">
+    <h2>✦ AI Analysis Results</h2>
+    <div class="result-grid">
+      <div class="card">
+        <h2>Prehľad</h2>
+        <p id="summary"></p>
+        <p id="severity"></p>
+      </div>
+      <div class="card">
+        <h2>Chýbajúce údaje</h2>
+        <ul id="missing"></ul>
+      </div>
+      <div class="card">
+        <h2>Extrahované fakty</h2>
+        <ul id="extracted"></ul>
+      </div>
+      <div class="card">
+        <h2>Odporúčané kroky</h2>
+        <ul id="next"></ul>
+      </div>
+      <div class="card wide">
+        <h2>Hypotézy a upozornenia</h2>
+        <ul id="hypotheses"></ul>
+        <ul id="warnings"></ul>
+      </div>
+      <div class="card wide">
+        <h2>8D Report · D1–D8</h2>
+        <p>Upravte návrh podľa potvrdených dôkazov.</p>
+        <div class="report-grid" id="report"></div>
+        <button id="download">↓ Export 8D Report</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>ClaimPilot AI © 2026 · MAGNA Hackathon · Quality Intelligence</footer>
+</main>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let count = 0;
+let latest = null;
+
+function message(text) {
+  $("message").textContent = text;
+}
+
+function fillList(id, items) {
+  const el = $(id);
+  el.replaceChildren();
+  const values = Array.isArray(items) && items.length
+    ? items : ["Žiadne údaje"];
+  values.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = typeof item === "object"
+      ? JSON.stringify(item) : String(item);
+    el.append(li);
+  });
+}
+
+function render(data) {
+  latest = data;
+  $("results").classList.remove("hidden");
+  $("summary").textContent = data.summary || "Bez súhrnu";
+  $("severity").textContent =
+    "Priorita: " + (data.severity || "Neznáma");
+
+  fillList("missing", data.missing);
+  fillList("next", data.next_steps);
+  fillList("hypotheses", data.hypotheses);
+  fillList("warnings", data.warnings);
+
+  fillList("extracted",
+    (data.extracted || []).map(x =>
+      x.label + ": " + x.value + " (" + (x.source || "nezadané") + ")"
+    )
+  );
+
+  $("report").replaceChildren();
+  for (let i = 1; i <= 8; i++) {
+    const label = document.createElement("label");
+    label.textContent = "D" + i;
+    const area = document.createElement("textarea");
+    area.id = "d" + i;
+    area.value = data.eight_d?.["D" + i] ||
+      "Vyžaduje overenie";
+    label.append(area);
+    $("report").append(label);
+  }
+  $("results").scrollIntoView({behavior:"smooth"});
+}
+
+$("example").onclick = () => {
+  $("description").value =
+    "Zákazník nahlásil praskliny na plastovom kryte. " +
+    "Diel PN-2041, šarža B17. " +
+    "Z 400 kusov je 12 chybných. " +
+    "Príčina zatiaľ nebola potvrdená.";
+  message("Ukážkový prípad vložený.");
+};
+
+function encodeFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () =>
+      resolve(String(reader.result).split(",")[1]);
+    reader.onerror = () => reject(new Error("Chyba súboru"));
+    reader.readAsDataURL(file);
+  });
+}
+
+$("analyze").onclick = async () => {
+  const description = $("description").value.trim();
+  const files = Array.from($("files").files);
+
+  if (!description && !files.length) {
+    message("Zadajte opis alebo priložte súbor.");
+    return;
+  }
+  if (files.length > 4 || files.some(f => f.size > 5*1024*1024)) {
+    message("Maximálne 4 súbory, každý do 5 MB.");
+    return;
+  }
+  const allowed = ["application/pdf","image/jpeg",
+                   "image/png","image/webp"];
+  if (files.some(f => !allowed.includes(f.type))) {
+    message("Nepodporovaný formát súboru.");
+    return;
+  }
+
+  const button = $("analyze");
+  button.disabled = true;
+  button.textContent = "AI analyzuje...";
+  message("Prebieha analýza dokumentov...");
+
+  try {
+    const attachments = await Promise.all(
+      files.map(async f => ({
+        name:f.name,
+        type:f.type,
+        data:await encodeFile(f)
+      }))
+    );
+
+    const response = await fetch("/api/analyze", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        description,
+        files:attachments
+      })
+    });
+
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(payload.error || "Chyba AI servera");
+    }
+    render(payload.analysis);
+    $("count").textContent = ++count;
+    message("Analýza dokončená.");
+  } catch (error) {
+    message("Chyba: " + error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "✦ Analyze with AI";
+  }
+};
+
+$("download").onclick = () => {
+  if (!latest) return;
+  let text = "CLAIMPILOT AI - 8D REPORT\n\n";
+  text += (latest.summary || "") + "\n\n";
+  for (let i = 1; i <= 8; i++) {
+    text += "D" + i + "\n" + $("d" + i).value + "\n\n";
+  }
+  const blob = new Blob([text], {
+    type:"text/plain;charset=utf-8"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ClaimPilot_8D_Report.txt";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+fetch("/api/health")
+  .then(r => {
+    if (!r.ok) throw new Error("Server error");
+    return r.json();
+  })
+  .then(data => {
+    $("health").textContent = data.configured
+      ? "● AI API pripravené"
+      : "● Chýba API kľúč";
+  })
+  .catch(() => {
+    $("health").textContent = "● AI server nedostupný";
+  });
+</script>
+</body>
+</html>
